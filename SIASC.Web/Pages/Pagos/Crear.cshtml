@@ -1,0 +1,299 @@
+﻿@page
+@model SIASC.Web.Pages.Pagos.CrearModel
+
+@{
+    ViewData["Title"] = "Registrar pago";
+    var cultura = new System.Globalization.CultureInfo("es-MX");
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Registrar pago</h2>
+            <p class="text-muted mb-0">
+                Registra un pago recibido por un trámite.
+            </p>
+        </div>
+
+        <a asp-page="/Tramites/Index"
+           class="btn btn-outline-secondary">
+            Volver a trámites
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form method="get"
+                  asp-page="/Pagos/Crear">
+
+                <label class="form-label fw-semibold">
+                    Seleccionar trámite
+                </label>
+
+                <div class="row g-2">
+
+                    <div class="col-md-9">
+                        <select name="id"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Selecciona un trámite
+                            </option>
+
+                            @foreach (var tramite in Model.Tramites)
+                            {
+                                if (Model.Datos.TramiteId == tramite.TramiteId)
+                                {
+                                    <option value="@tramite.TramiteId" selected>
+                                        @tramite.Descripcion
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@tramite.TramiteId">
+                                        @tramite.Descripcion
+                                    </option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="submit"
+                                class="btn btn-outline-primary w-100">
+                            Consultar saldo
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    @if (Model.Datos.TramiteId.HasValue &&
+         Model.NombreTramite != null)
+    {
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Resumen financiero</h5>
+            </div>
+
+            <div class="card-body">
+
+                <p class="mb-3">
+                    <strong>Trámite:</strong>
+                    @Model.NombreTramite
+                </p>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <small class="text-muted">
+                                Costo total
+                            </small>
+                            <h4 class="mb-0">
+                                @Model.CostoTotal.ToString("C2", cultura)
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <small class="text-muted">
+                                Total pagado
+                            </small>
+                            <h4 class="mb-0 text-success">
+                                @Model.TotalPagado.ToString("C2", cultura)
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <small class="text-muted">
+                                Saldo pendiente
+                            </small>
+                            <h4 class="mb-0 text-primary">
+                                @Model.SaldoPendiente.ToString("C2", cultura)
+                            </h4>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Datos del pago</h5>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post">
+
+                    <input type="hidden"
+                           asp-for="Datos.TramiteId" />
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Datos.Monto"
+                                   class="form-label">
+                                Importe (MXN)
+                            </label>
+
+                            <input asp-for="Datos.Monto"
+                                   type="number"
+                                   step="0.01"
+                                   min="0.01"
+                                   class="form-control"
+                                   placeholder="0.00" />
+
+                            <span asp-validation-for="Datos.Monto"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Datos.FechaPago"
+                                   class="form-label">
+                                Fecha del pago
+                            </label>
+
+                            <input asp-for="Datos.FechaPago"
+                                   type="date"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Datos.FechaPago"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Datos.MetodoPago"
+                                   class="form-label">
+                                Método de pago
+                            </label>
+
+                            <select asp-for="Datos.MetodoPago"
+                                    class="form-select">
+
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia">Transferencia</option>
+                                <option value="Tarjeta">Tarjeta</option>
+                                <option value="Otro">Otro</option>
+
+                            </select>
+
+                            <span asp-validation-for="Datos.MetodoPago"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Datos.TipoPago"
+                                   class="form-label">
+                                Tipo de pago
+                            </label>
+
+                            <select asp-for="Datos.TipoPago"
+                                    class="form-select">
+
+                                <option value="Anticipo">Anticipo</option>
+                                <option value="Abono">Abono</option>
+                                <option value="Liquidacion">Liquidación</option>
+
+                            </select>
+
+                            <span asp-validation-for="Datos.TipoPago"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <label asp-for="Datos.Referencia"
+                                   class="form-label">
+                                Referencia
+                            </label>
+
+                            <input asp-for="Datos.Referencia"
+                                   class="form-control"
+                                   maxlength="150"
+                                   placeholder="Folio, número de operación, etc." />
+
+                            <span asp-validation-for="Datos.Referencia"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <label asp-for="Datos.Observaciones"
+                                   class="form-label">
+                                Observaciones
+                            </label>
+
+                            <textarea asp-for="Datos.Observaciones"
+                                      class="form-control"
+                                      rows="3"
+                                      maxlength="1000">
+                            </textarea>
+
+                            <span asp-validation-for="Datos.Observaciones"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <a asp-page="/Tramites/Detalle"
+                           asp-route-id="@Model.Datos.TramiteId"
+                           class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                disabled="@(Model.SaldoPendienteCentavos <= 0)">
+                            Guardar pago
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

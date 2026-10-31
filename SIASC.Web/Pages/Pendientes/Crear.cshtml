@@ -1,0 +1,180 @@
+﻿@page
+@model SIASC.Web.Pages.Pendientes.CrearModel
+
+@{
+    ViewData["Title"] = "Registrar pendiente";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Pendientes/Index"
+       class="text-decoration-none small">
+        &larr; Volver a pendientes
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-1">
+            Registrar nuevo pendiente
+        </h1>
+
+        <p class="text-muted">
+            Registra una actividad para dar seguimiento
+            a los trámites o a las tareas de la agencia.
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Entrada.TramiteId"
+                           class="form-label fw-semibold">
+                        Trámite asociado
+                    </label>
+
+                    <select asp-for="Entrada.TramiteId"
+                            asp-items="Model.TramitesDisponibles"
+                            class="form-select">
+
+                        <option value="">
+                            Pendiente general de la agencia
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="Entrada.TramiteId"
+                          class="text-danger small">
+                    </span>
+
+                    <div class="form-text">
+                        Este campo es opcional. Déjalo vacío
+                        si el pendiente no corresponde
+                        a un trámite específico.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Entrada.Titulo"
+                           class="form-label fw-semibold">
+                        Título del pendiente *
+                    </label>
+
+                    <input asp-for="Entrada.Titulo"
+                           class="form-control"
+                           maxlength="200"
+                           placeholder="Ej. Confirmar documentos del cliente" />
+
+                    <span asp-validation-for="Entrada.Titulo"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Entrada.Descripcion"
+                           class="form-label fw-semibold">
+                        Descripción
+                    </label>
+
+                    <textarea asp-for="Entrada.Descripcion"
+                              class="form-control"
+                              rows="4"
+                              maxlength="2000"
+                              placeholder="Describe los detalles de la actividad"></textarea>
+
+                    <span asp-validation-for="Entrada.Descripcion"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-6">
+                        <label asp-for="Entrada.FechaVencimiento"
+                               class="form-label fw-semibold">
+                            Fecha límite
+                        </label>
+
+                        <input asp-for="Entrada.FechaVencimiento"
+                               type="datetime-local"
+                               class="form-control" />
+
+                        <span asp-validation-for="Entrada.FechaVencimiento"
+                              class="text-danger small">
+                        </span>
+
+                        <div class="form-text">
+                            Opcional. Utiliza la hora local
+                            de la agencia.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Entrada.Prioridad"
+                               class="form-label fw-semibold">
+                            Prioridad *
+                        </label>
+
+                        <select asp-for="Entrada.Prioridad"
+                                class="form-select">
+
+                            <option value="Baja">
+                                Baja
+                            </option>
+
+                            <option value="Media">
+                                Media
+                            </option>
+
+                            <option value="Alta">
+                                Alta
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Entrada.Prioridad"
+                              class="text-danger small">
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="alert alert-light border small">
+                    Los pendientes nuevos se registran
+                    automáticamente con el estado
+                    <strong>Pendiente</strong>.
+                    Su estado podrá actualizarse
+                    posteriormente.
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Guardar pendiente
+                    </button>
+
+                    <a asp-page="/Pendientes/Index"
+                       class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

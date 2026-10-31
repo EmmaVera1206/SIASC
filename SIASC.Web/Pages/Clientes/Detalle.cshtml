@@ -1,0 +1,231 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Clientes.DetalleModel
+
+@{
+    ViewData["Title"] = "Detalle del cliente";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between
+        align-items-start flex-wrap gap-3 mb-4">
+
+        <div>
+            <a asp-page="/Clientes/Index"
+               class="text-decoration-none small">
+                &larr; Volver a clientes
+            </a>
+
+            <h1 class="h3 fw-bold mt-2 mb-1">
+                @Model.Cliente!.NombreCompleto
+            </h1>
+
+            @if (Model.Cliente.Activo)
+            {
+                <span class="badge bg-success">
+                    Cliente activo
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">
+                    Cliente inactivo
+                </span>
+            }
+        </div>
+
+        <a asp-page="/Clientes/Editar"
+           asp-route-id="@Model.Cliente.ClienteId"
+           class="btn btn-outline-primary">
+            Editar información
+        </a>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-lg-7">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <h2 class="h5 fw-bold mb-4">
+                        Información general
+                    </h2>
+
+                    <dl class="row mb-0">
+
+                        <dt class="col-sm-5 text-muted">
+                            Nombre completo
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Model.Cliente.NombreCompleto
+                        </dd>
+
+                        <dt class="col-sm-5 text-muted">
+                            Teléfono
+                        </dt>
+                        <dd class="col-sm-7">
+                            @Model.Cliente.Telefono
+                        </dd>
+
+                        <dt class="col-sm-5 text-muted">
+                            Correo electrónico
+                        </dt>
+                        <dd class="col-sm-7">
+                            @(Model.Cliente.CorreoElectronico ?? "No registrado")
+                        </dd>
+
+                        <dt class="col-sm-5 text-muted">
+                            Recomendado por
+                        </dt>
+                        <dd class="col-sm-7">
+                            @(Model.Cliente.RecomendadoPor ?? "No registrado")
+                        </dd>
+
+                    </dl>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-lg-5">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <h2 class="h5 fw-bold mb-4">
+                        Información del registro
+                    </h2>
+
+                    <dl class="row mb-0">
+
+                        <dt class="col-sm-6 text-muted">
+                            Identificador
+                        </dt>
+                        <dd class="col-sm-6">
+                            #@Model.Cliente.ClienteId
+                        </dd>
+
+                        <dt class="col-sm-6 text-muted">
+                            Fecha de registro
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Model.Cliente.FechaRegistro.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        <dt class="col-sm-6 text-muted">
+                            Última actualización
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Model.Cliente.FechaActualizacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        <dt class="col-sm-6 text-muted">
+                            Trámites registrados
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Model.Tramites.Count
+                        </dd>
+
+                    </dl>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mt-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between
+                align-items-center flex-wrap gap-2 mb-4">
+
+                <div>
+                    <h2 class="h5 fw-bold mb-1">
+                        Trámites del cliente
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Historial de servicios solicitados.
+                    </p>
+                </div>
+
+                <span class="badge bg-primary">
+                    @Model.Tramites.Count trámite(s)
+                </span>
+
+            </div>
+
+            @if (Model.Tramites.Count == 0)
+            {
+                <div class="text-center py-5">
+
+                    <h3 class="h6 text-muted">
+                        Este cliente todavía no tiene trámites registrados.
+                    </h3>
+
+                    <p class="text-muted small mb-0">
+                        Sus solicitudes aparecerán aquí cuando
+                        implementemos el módulo de trámites.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Servicio</th>
+                                <th>Estado</th>
+                                <th>Fecha de inicio</th>
+                                <th>Fecha de cierre</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var tramite in Model.Tramites)
+                            {
+                                <tr>
+                                    <td>#@tramite.TramiteId</td>
+
+                                    <td>@tramite.Servicio</td>
+
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @tramite.Estado
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @tramite.FechaInicio.ToLocalTime().ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @(tramite.FechaCierre.HasValue
+                                            ? tramite.FechaCierre.Value.ToLocalTime().ToString("dd/MM/yyyy"): "—")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

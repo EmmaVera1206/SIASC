@@ -1,0 +1,243 @@
+﻿@page
+@using SIASC.Domain.Constants
+@model SIASC.Web.Pages.Clientes.IndexModel
+
+@{
+    ViewData["Title"] = "Clientes";
+    bool esAdministrador = User.IsInRole(RolesSistema.Administrador);
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between
+        align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Gestión de clientes
+            </h1>
+
+            <p class="text-muted mb-0">
+                Consulta y seguimiento de los clientes registrados.
+            </p>
+        </div>
+
+        <a asp-page="/Clientes/Crear"
+           class="btn btn-primary">
+            + Nuevo cliente
+        </a>
+
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <div class="text-muted small">
+                        Total de clientes
+                    </div>
+
+                    <div class="fs-3 fw-bold">
+                        @Model.TotalClientes
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <div class="text-muted small">
+                        Clientes activos
+                    </div>
+
+                    <div class="fs-3 fw-bold text-success">
+                        @Model.ClientesActivos
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <form method="get" class="row g-3 mb-4">
+
+                <div class="col-md-7">
+                    <label asp-for="Busqueda"
+                           class="form-label">
+                        Buscar cliente
+                    </label>
+
+                    <input asp-for="Busqueda"
+                           class="form-control"
+                           placeholder="Nombre, teléfono o correo" />
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check mb-2">
+
+                        <input asp-for="MostrarInactivos"
+                               class="form-check-input" />
+
+                        <label asp-for="MostrarInactivos"
+                               class="form-check-label">
+                            Incluir inactivos
+                        </label>
+
+                    </div>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary w-100">
+                        Buscar
+                    </button>
+                </div>
+
+            </form>
+
+            @if (Model.Clientes.Count == 0)
+            {
+                <div class="text-center py-5">
+
+                    <h2 class="h5 text-muted">
+                        No se encontraron clientes
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        No hay registros que coincidan
+                        con los filtros seleccionados.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Correo electrónico</th>
+                                <th>Trámites</th>
+                                <th>Estado</th>
+                                <th>Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var cliente in Model.Clientes)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">
+                                        @cliente.NombreCompleto
+                                    </td>
+
+                                    <td>@cliente.Telefono</td>
+
+                                    <td>
+                                        @(cliente.CorreoElectronico ?? "—")
+                                    </td>
+
+                                    <td>@cliente.NumeroTramites</td>
+
+                                    <td>
+                                        @if (cliente.Activo)
+                                        {
+                                            <span class="badge bg-success">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @cliente.FechaRegistro.ToLocalTime().ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-2 flex-wrap">
+
+                                            <a asp-page="/Clientes/Detalle"
+                                               asp-route-id="@cliente.ClienteId"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                Ver ficha
+                                            </a>
+
+                                            <a asp-page="/Clientes/Editar"
+                                               asp-route-id="@cliente.ClienteId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Editar
+                                            </a>
+
+                                            @if (esAdministrador)
+                                            {
+                                                <form method="post"
+                                                      asp-page-handler="CambiarEstado"
+                                                      asp-route-id="@cliente.ClienteId"
+                                                      asp-route-activar="@(!cliente.Activo)"
+                                                      class="m-0">
+
+                                                    @if (cliente.Activo)
+                                                    {
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                onclick="return confirm('¿Deseas desactivar este cliente?');">
+                                                            Desactivar
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-success"
+                                                                onclick="return confirm('¿Deseas reactivar este cliente?');">
+                                                            Reactivar
+                                                        </button>
+                                                    }
+
+                                                </form>
+                                            }
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

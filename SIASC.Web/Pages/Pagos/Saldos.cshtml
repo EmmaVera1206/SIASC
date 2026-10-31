@@ -1,0 +1,284 @@
+﻿@page
+@model SIASC.Web.Pages.Pagos.SaldosModel
+
+@{
+    ViewData["Title"] = "Control de saldos";
+    var cultura = new System.Globalization.CultureInfo("es-MX");
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+        <div>
+            <h2 class="mb-1">Control de saldos</h2>
+
+            <p class="text-muted mb-0">
+                Consulta los importes pagados y pendientes de cada trámite.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a asp-page="/Pagos/Index"
+               class="btn btn-outline-secondary">
+                Historial de pagos
+            </a>
+
+            <a asp-page="/Pagos/Crear"
+               class="btn btn-primary">
+                Registrar pago
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Valor total de trámites
+                    </small>
+
+                    <h3 class="mb-0">
+                        @Model.TotalCostos.ToString("C2", cultura)
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total recibido
+                    </small>
+
+                    <h3 class="mb-0 text-success">
+                        @Model.TotalPagado.ToString("C2", cultura)
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total pendiente por cobrar
+                    </small>
+
+                    <h3 class="mb-0 text-primary">
+                        @Model.TotalPendiente.ToString("C2", cultura)
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="border rounded p-3">
+                <small class="text-muted">Trámites</small>
+                <h4 class="mb-0">@Model.TotalTramites</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="border rounded p-3">
+                <small class="text-muted">Liquidados</small>
+                <h4 class="mb-0 text-success">@Model.TotalLiquidados</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="border rounded p-3">
+                <small class="text-muted">Pagos parciales</small>
+                <h4 class="mb-0 text-warning">@Model.TotalParciales</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="border rounded p-3">
+                <small class="text-muted">Sin pagos</small>
+                <h4 class="mb-0 text-danger">@Model.TotalSinPagos</h4>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                Estado financiero por trámite
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (!Model.Saldos.Any())
+            {
+                <div class="text-center py-5">
+
+                    <h5>No existen trámites registrados</h5>
+
+                    <p class="text-muted">
+                        Los trámites aparecerán aquí cuando sean creados.
+                    </p>
+
+                    <a asp-page="/Tramites/Index"
+                       class="btn btn-outline-primary">
+                        Ver trámites
+                    </a>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Trámite</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Costo total</th>
+                                <th>Pagado</th>
+                                <th>Pendiente</th>
+                                <th>Estado financiero</th>
+                                <th>Progreso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var saldo in Model.Saldos)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            #@saldo.TramiteId
+                                        </strong>
+
+                                        <div>
+                                            <small class="text-muted">
+                                                @saldo.EstadoTramite
+                                            </small>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @saldo.NombreCliente
+                                    </td>
+
+                                    <td>
+                                        @saldo.NombreServicio
+                                    </td>
+
+                                    <td>
+                                        @saldo.CostoTotal.ToString("C2", cultura)
+                                    </td>
+
+                                    <td class="text-success">
+                                        @saldo.TotalPagado.ToString("C2", cultura)
+                                    </td>
+
+                                    <td class="fw-semibold">
+                                        @saldo.SaldoPendiente.ToString("C2", cultura)
+                                    </td>
+
+                                    <td>
+                                        @if (saldo.EstadoPago == "Liquidado")
+                                        {
+                                            <span class="badge bg-success">
+                                                Liquidado
+                                            </span>
+                                        }
+                                        else if (saldo.EstadoPago == "Parcial")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Parcial
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Sin pagos
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td style="min-width: 130px;">
+
+                                        <div class="progress"
+                                             style="height: 12px;">
+
+                                            <div class="progress-bar bg-success"
+                                                 role="progressbar"
+                                                 style="width: @(saldo.PorcentajePagado.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%;"
+                                                 aria-valuenow="@saldo.PorcentajePagado.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                            </div>
+
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @saldo.PorcentajePagado.ToString("0.##")%
+                                        </small>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <a asp-page="/Tramites/Detalle"
+                                               asp-route-id="@saldo.TramiteId"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                Ver trámite
+                                            </a>
+
+                                            @if (saldo.SaldoPendienteCentavos > 0)
+                                            {
+                                                <a asp-page="/Pagos/Crear"
+                                                   asp-route-id="@saldo.TramiteId"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    Registrar pago
+                                                </a>
+                                            }
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,342 @@
+﻿@page
+@model SIASC.Web.Pages.Pagos.IndexModel
+
+@{
+    ViewData["Title"] = "Historial de pagos";
+    var cultura = new System.Globalization.CultureInfo("es-MX");
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1">Historial de pagos</h2>
+
+            <p class="text-muted mb-0">
+                Consulta y administra los movimientos financieros registrados en SIASC.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a asp-page="/Pagos/Auditoria"
+               class="btn btn-outline-secondary">
+                Auditoría financiera
+            </a>
+
+            <a asp-page="/Pagos/Saldos"
+               class="btn btn-outline-primary">
+                Control de saldos
+            </a>
+
+            <a asp-page="/Pagos/Crear"
+               class="btn btn-primary">
+                Registrar nuevo pago
+            </a>
+
+        </div>
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar"></button>
+        </div>
+    }
+
+    @if (TempData["MensajeError"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            @TempData["MensajeError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar"></button>
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted">
+                        Total de registros
+                    </small>
+
+                    <h3 class="mb-0">
+                        @Model.TotalRegistros
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted">
+                        Pagos vigentes
+                    </small>
+
+                    <h3 class="mb-0 text-success">
+                        @Model.TotalVigentes
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted">
+                        Pagos anulados
+                    </small>
+
+                    <h3 class="mb-0 text-danger">
+                        @Model.TotalAnulados
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted">
+                        Total recibido
+                    </small>
+
+                    <h3 class="mb-0 text-primary">
+                        @Model.TotalRecibido.ToString("C2", cultura)
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                Movimientos registrados
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (!Model.Pagos.Any())
+            {
+                <div class="text-center py-5">
+                    <h5>No existen pagos registrados</h5>
+
+                    <p class="text-muted">
+                        Los pagos que registres aparecerán aquí.
+                    </p>
+
+                    <a asp-page="/Pagos/Crear"
+                       class="btn btn-primary">
+                        Registrar primer pago
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Trámite</th>
+                                <th>Tipo</th>
+                                <th>Método</th>
+                                <th>Importe</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var pago in Model.Pagos)
+                            {
+                                <tr>
+                                    <td>
+                                        @pago.FechaPago.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @pago.NombreCliente
+                                    </td>
+
+                                    <td>
+                                        <div>
+                                            <strong>
+                                                #@pago.TramiteId
+                                            </strong>
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @pago.NombreServicio
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        @pago.TipoPago
+                                    </td>
+
+                                    <td>
+                                        @pago.MetodoPago
+                                    </td>
+
+                                    <td>
+                                        <strong class="@(pago.Anulado ? "text-decoration-line-through text-muted" : "")">
+                                            @pago.Monto.ToString("C2", cultura)
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @if (pago.Anulado)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Anulado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                Vigente
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <a asp-page="/Tramites/Detalle"
+                                               asp-route-id="@pago.TramiteId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Ver trámite
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#detallePago-@pago.PagoId"
+                                                    aria-expanded="false"
+                                                    aria-controls="detallePago-@pago.PagoId">
+                                                Detalles
+                                            </button>
+
+                                            @if (!pago.Anulado)
+                                            {
+                                                <a asp-page="/Pagos/Anular"
+                                                   asp-route-id="@pago.PagoId"
+                                                   class="btn btn-sm btn-outline-danger">
+                                                    Anular pago
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-page="/Pagos/Auditoria"
+                                                   asp-route-id="@pago.TramiteId"
+                                                   class="btn btn-sm btn-outline-dark">
+                                                    Ver auditoría
+                                                </a>
+                                            }
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="collapse"
+                                    id="detallePago-@pago.PagoId">
+
+                                    <td colspan="8">
+
+                                        <div class="p-3 bg-light rounded">
+
+                                            <h6 class="mb-3">
+                                                Detalle del pago #@pago.PagoId
+                                            </h6>
+
+                                            <div class="row g-3">
+
+                                                <div class="col-md-6">
+                                                    <strong>Referencia:</strong>
+                                                    <div>
+                                                        @(string.IsNullOrWhiteSpace(pago.Referencia)
+                                                            ? "Sin referencia"
+                                                            : pago.Referencia)
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <strong>Fecha de registro:</strong>
+                                                    <div>
+                                                        @pago.FechaRegistro.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <strong>Observaciones:</strong>
+                                                    <div style="white-space: pre-wrap;">
+                                                        @(string.IsNullOrWhiteSpace(pago.Observaciones)
+                                                                    ? "Sin observaciones"
+                                                                    : pago.Observaciones)
+                                                    </div>
+                                                </div>
+
+                                                @if (pago.Anulado)
+                                                {
+                                                    <div class="col-md-6">
+                                                        <strong>Fecha de anulación:</strong>
+                                                        <div>
+                                                            @(pago.FechaAnulacion.HasValue
+                                                                ? pago.FechaAnulacion.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                                                : "No registrada")
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <strong>Motivo de anulación:</strong>
+                                                        <div style="white-space: pre-wrap;">
+                                                            @(string.IsNullOrWhiteSpace(pago.MotivoAnulacion)
+                                                                            ? "No especificado"
+                                                                            : pago.MotivoAnulacion)
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

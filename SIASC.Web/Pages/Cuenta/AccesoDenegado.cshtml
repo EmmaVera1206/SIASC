@@ -1,0 +1,38 @@
+﻿@page
+@model SIASC.Web.Pages.Cuenta.AccesoDenegadoModel
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 text-center">
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-5">
+
+                    <h1 class="display-5 fw-bold text-danger">
+                        Acceso denegado
+                    </h1>
+
+                    <p class="lead mt-3">
+                        No tienes permisos para acceder
+                        a esta sección de SIASC.
+                    </p>
+
+                    <p class="text-muted">
+                        Si consideras que necesitas acceso,
+                        comunícate con el administrador del sistema.
+                    </p>
+
+                    <a asp-page="/Index"
+                       class="btn btn-primary mt-3">
+                        Volver al inicio
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

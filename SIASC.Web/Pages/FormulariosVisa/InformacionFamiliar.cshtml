@@ -1,0 +1,508 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.InformacionFamiliarModel
+
+@{
+    ViewData["Title"] = "Información familiar";
+}
+
+@{
+    var paginaActual = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-1">
+            Formulario de visa americana
+        </h1>
+
+        <p class="text-muted mb-1">
+            @Model.NombreCliente
+        </p>
+
+        <p class="small text-muted">
+            Trámite #@Model.TramiteId
+        </p>
+    </div>
+
+    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Secciones del formulario de visa">
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/DatosPersonales" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/DatosPersonales" ? "page" : null)">
+            1. Datos personales
+        </a>
+
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/PlanesViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/PlanesViaje" ? "page" : null)">
+            2. Planes y gastos
+        </a>
+
+        <a asp-page="/FormulariosVisa/HistorialVisa"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/HistorialVisa" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/HistorialVisa" ? "page" : null)">
+            3. Historial de visa
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionFamiliar"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "page" : null)">
+            4. Familia
+        </a>
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "page" : null)">
+            5. Ocupación y estudios
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionComplementaria"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "page" : null)">
+            6. Complementaria
+        </a>
+
+        <a asp-page="/FormulariosVisa/AcompananteViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "page" : null)">
+            7. Acompañantes
+        </a>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/Resumen" ? "btn-primary" : "btn-outline-primary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/Resumen" ? "page" : null)">
+            Resumen
+        </a>
+
+    </nav>
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    @if (!Model.PuedeEditar)
+    {
+        <div class="alert alert-warning">
+            Este formulario ya no está en borrador.
+            No se permiten modificaciones.
+        </div>
+    }
+
+    <form method="post" asp-page-handler="Guardar">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Información de los padres
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+                        <h3 class="h6 fw-semibold">
+                            Padre
+                        </h3>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.NombrePadre"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.NombrePadre"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label asp-for="Input.FechaNacimientoPadre"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.FechaNacimientoPadre"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label asp-for="Input.PadreEnEstadosUnidos"
+                               class="form-label"></label>
+
+                        <select asp-for="Input.PadreEnEstadosUnidos"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <h3 class="h6 fw-semibold">
+                            Madre
+                        </h3>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.NombreMadre"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.NombreMadre"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label asp-for="Input.FechaNacimientoMadre"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.FechaNacimientoMadre"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label asp-for="Input.MadreEnEstadosUnidos"
+                               class="form-label"></label>
+
+                        <select asp-for="Input.MadreEnEstadosUnidos"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Familiares en Estados Unidos
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TieneFamiliaresInmediatosEEUU"
+                               class="form-label"></label>
+
+                        <select asp-for="Input.TieneFamiliaresInmediatosEEUU"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TieneOtrosFamiliaresEEUU"
+                               class="form-label"></label>
+
+                        <select asp-for="Input.TieneOtrosFamiliaresEEUU"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Información del cónyuge
+                </h2>
+
+                <p class="text-muted small">
+                    Completa los campos que correspondan
+                    a la situación del solicitante.
+                </p>
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.NombreConyuge"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.NombreConyuge"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaNacimientoConyuge"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.FechaNacimientoConyuge"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.LugarNacimientoConyuge"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.LugarNacimientoConyuge"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaMatrimonio"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.FechaMatrimonio"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaDivorcio"
+                               class="form-label"></label>
+
+                        <input asp-for="Input.FechaDivorcio"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.MotivoDivorcio"
+                               class="form-label"></label>
+
+                        <textarea asp-for="Input.MotivoDivorcio"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-4">
+
+            <a asp-page="/FormulariosVisa/HistorialVisa"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-outline-secondary">
+                Anterior
+            </a>
+
+            @if (Model.PuedeEditar)
+            {
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar información familiar
+                </button>
+            }
+
+        </div>
+
+    </form>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-2">
+                Registro de familiares en Estados Unidos
+            </h2>
+
+            <p class="text-muted small mb-4">
+                Agrega individualmente los familiares
+                que correspondan.
+            </p>
+
+            @if (Model.Familiares.Count == 0)
+            {
+                <div class="alert alert-light border">
+                    No hay familiares registrados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive mb-4">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Parentesco</th>
+                                <th>Estatus legal</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var familiar in Model.Familiares)
+                            {
+                                <tr>
+                                    <td>@familiar.NombreCompleto</td>
+                                    <td>@familiar.Parentesco</td>
+                                    <td>@familiar.EstatusLegalEEUU</td>
+
+                                    <td>
+
+                                        @if (Model.PuedeEditar)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="EliminarFamiliar"
+                                                  asp-route-id="@Model.TramiteId"
+                                                  asp-route-familiarId="@familiar.FamiliarVisaId">
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Eliminar este familiar?');">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+            @if (Model.PuedeEditar)
+            {
+                <h3 class="h6 fw-bold mb-3">
+                    Agregar familiar
+                </h3>
+
+                <form method="post"
+                      asp-page-handler="AgregarFamiliar">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+
+                            <label asp-for="NuevoFamiliar.NombreCompleto"
+                                   class="form-label"></label>
+
+                            <input asp-for="NuevoFamiliar.NombreCompleto"
+                                   class="form-control"
+                                   maxlength="200" />
+
+                            <span asp-validation-for="NuevoFamiliar.NombreCompleto"
+                                  class="text-danger small"></span>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label asp-for="NuevoFamiliar.Parentesco"
+                                   class="form-label"></label>
+
+                            <input asp-for="NuevoFamiliar.Parentesco"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. Hermano" />
+
+                            <span asp-validation-for="NuevoFamiliar.Parentesco"
+                                  class="text-danger small"></span>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <label asp-for="NuevoFamiliar.EstatusLegalEEUU"
+                                   class="form-label"></label>
+
+                            <input asp-for="NuevoFamiliar.EstatusLegalEEUU"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. Residente permanente" />
+
+                            <span asp-validation-for="NuevoFamiliar.EstatusLegalEEUU"
+                                  class="text-danger small"></span>
+
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+
+                            <button type="submit"
+                                    class="btn btn-outline-primary w-100">
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

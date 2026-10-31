@@ -1,0 +1,293 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Citas.EditarModel
+
+@{
+    ViewData["Title"] = "Administrar cita";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Citas/Index"
+       class="text-decoration-none small">
+        &larr; Volver a citas
+    </a>
+
+    <div class="d-flex justify-content-between
+        align-items-start flex-wrap gap-3 mt-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Administrar cita #@Model.CitaId
+            </h1>
+
+            <p class="text-muted mb-1">
+                @Model.NombreCliente
+            </p>
+
+            <p class="small text-muted mb-0">
+                Trámite #@Model.TramiteId -
+                @Model.NombreServicio
+            </p>
+        </div>
+
+        @if (Model.EstadoActual == "Tentativa")
+        {
+            <span class="badge bg-warning text-dark">
+                Tentativa
+            </span>
+        }
+        else if (Model.EstadoActual == "Confirmada")
+        {
+            <span class="badge bg-success">
+                Confirmada
+            </span>
+        }
+        else if (Model.EstadoActual == "Realizada")
+        {
+            <span class="badge bg-primary">
+                Realizada
+            </span>
+        }
+        else if (Model.EstadoActual == "Cancelada")
+        {
+            <span class="badge bg-danger">
+                Cancelada
+            </span>
+        }
+        else
+        {
+            <span class="badge bg-secondary">
+                @Model.EstadoActual
+            </span>
+        }
+
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    @if (TempData["MensajeError"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["MensajeError"]
+        </div>
+    }
+
+    @if (!Model.PuedeEditar)
+    {
+        <div class="alert alert-info">
+            Esta cita está finalizada o cancelada.
+            Su información se conserva para consulta
+            y ya no puede modificarse.
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-4">
+                Información de la cita
+            </h2>
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Entrada.TipoCita"
+                           class="form-label fw-semibold">
+                        Tipo de cita *
+                    </label>
+
+                    <input asp-for="Entrada.TipoCita"
+                           class="form-control"
+                           maxlength="100"
+                           readonly="@(!Model.PuedeEditar)" />
+
+                    <span asp-validation-for="Entrada.TipoCita"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="row g-3 mb-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="Entrada.FechaTentativa"
+                               class="form-label fw-semibold">
+                            Fecha tentativa
+                        </label>
+
+                        <input asp-for="Entrada.FechaTentativa"
+                               type="datetime-local"
+                               class="form-control"
+                               readonly="@(!Model.PuedeEditar)" />
+
+                        <span asp-validation-for="Entrada.FechaTentativa"
+                              class="text-danger small">
+                        </span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Entrada.FechaConfirmada"
+                               class="form-label fw-semibold">
+                            Fecha confirmada
+                        </label>
+
+                        <input asp-for="Entrada.FechaConfirmada"
+                               type="datetime-local"
+                               class="form-control"
+                               readonly="@(!Model.PuedeEditar)" />
+
+                        <span asp-validation-for="Entrada.FechaConfirmada"
+                              class="text-danger small">
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Entrada.Lugar"
+                           class="form-label fw-semibold">
+                        Lugar
+                    </label>
+
+                    <input asp-for="Entrada.Lugar"
+                           class="form-control"
+                           maxlength="300"
+                           readonly="@(!Model.PuedeEditar)" />
+
+                    <span asp-validation-for="Entrada.Lugar"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Entrada.Observaciones"
+                           class="form-label fw-semibold">
+                        Observaciones
+                    </label>
+
+                    <textarea asp-for="Entrada.Observaciones"
+                              class="form-control"
+                              rows="4"
+                              maxlength="2000"
+                              readonly="@(!Model.PuedeEditar)"></textarea>
+
+                    <span asp-validation-for="Entrada.Observaciones"
+                          class="text-danger small">
+                    </span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    @if (Model.PuedeEditar)
+                    {
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Guardar cambios
+                        </button>
+                    }
+
+                    <a asp-page="/Tramites/Detalle"
+                       asp-route-id="@Model.TramiteId"
+                       class="btn btn-outline-secondary">
+                        Ver trámite
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    @if (Model.PuedeEditar)
+    {
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-2">
+                    Actualizar estado
+                </h2>
+
+                <p class="text-muted small mb-4">
+                    Los cambios de estado se guardan
+                    independientemente de las modificaciones
+                    del formulario anterior.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    @if (Model.EstadoActual == "Tentativa")
+                    {
+                        <form method="post"
+                              asp-page-handler="CambiarEstado"
+                              asp-route-id="@Model.CitaId">
+
+                            <input type="hidden"
+                                   name="nuevoEstado"
+                                   value="Confirmada" />
+
+                            <button type="submit"
+                                    class="btn btn-success"
+                                    onclick="return confirm('¿Confirmar esta cita? Asegúrate de haber guardado primero la fecha confirmada.');">
+                                Confirmar cita
+                            </button>
+
+                        </form>
+                    }
+
+                    @if (Model.EstadoActual == "Confirmada")
+                    {
+                        <form method="post"
+                              asp-page-handler="CambiarEstado"
+                              asp-route-id="@Model.CitaId">
+
+                            <input type="hidden"
+                                   name="nuevoEstado"
+                                   value="Realizada" />
+
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    onclick="return confirm('¿Marcar esta cita como realizada?');">
+                                Marcar como realizada
+                            </button>
+
+                        </form>
+                    }
+
+                    <form method="post"
+                          asp-page-handler="CambiarEstado"
+                          asp-route-id="@Model.CitaId">
+
+                        <input type="hidden"
+                               name="nuevoEstado"
+                               value="Cancelada" />
+
+                        <button type="submit"
+                                class="btn btn-outline-danger"
+                                onclick="return confirm('¿Cancelar esta cita? Esta acción no podrá revertirse desde este módulo.');">
+                            Cancelar cita
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

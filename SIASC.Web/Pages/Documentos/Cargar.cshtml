@@ -1,0 +1,154 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Documentos.CargarModel
+
+@{
+    ViewData["Title"] = "Cargar documento";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-2">
+            Cargar documento
+        </h1>
+
+        <p class="text-muted mb-1">
+            @Model.NombreCliente
+        </p>
+
+        <p class="small text-muted mb-0">
+            @Model.NombreServicio
+            · Trámite #@Model.TramiteId
+        </p>
+    </div>
+
+    @if (TempData["MensajeExito"] is string mensaje)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            @mensaje
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-3">
+                Información del documento
+            </h2>
+
+            <p class="text-muted small">
+                Se permiten archivos PDF, JPG, JPEG y PNG
+                de hasta 10 MB.
+            </p>
+
+            <form method="post"
+                  enctype="multipart/form-data"
+                  asp-route-id="@Model.TramiteId">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Input.TipoDocumento"
+                           class="form-label fw-semibold">
+                    </label>
+
+                    <input asp-for="Input.TipoDocumento"
+                           class="form-control"
+                           maxlength="100"
+                           placeholder="Ej. CURP, identificación, comprobante de domicilio" />
+
+                    <span asp-validation-for="Input.TipoDocumento"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Input.Archivo"
+                           class="form-label fw-semibold">
+                    </label>
+
+                    <input asp-for="Input.Archivo"
+                           type="file"
+                           class="form-control"
+                           accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+
+                    <span asp-validation-for="Input.Archivo"
+                          class="text-danger small">
+                    </span>
+
+                    <div class="form-text">
+                        Tamaño máximo: 10 MB.
+                        El sistema verificará el formato del archivo.
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label asp-for="Input.Observaciones"
+                           class="form-label fw-semibold">
+                    </label>
+
+                    <textarea asp-for="Input.Observaciones"
+                              class="form-control"
+                              rows="4"
+                              maxlength="1000"
+                              placeholder="Información adicional del documento (opcional)"></textarea>
+
+                    <span asp-validation-for="Input.Observaciones"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                    <a asp-page="/Tramites/Detalle"
+                       asp-route-id="@Model.TramiteId"
+                       class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Guardar documento
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="alert alert-info mt-4" role="note">
+        Los documentos se almacenan en una ubicación privada.
+        No se publican directamente en el sitio web.
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

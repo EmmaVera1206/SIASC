@@ -1,0 +1,262 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.ResumenModel
+
+@{
+    ViewData["Title"] = "Resumen del formulario de visa";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="d-flex flex-wrap justify-content-between
+        align-items-start gap-3 mt-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-2">
+                Resumen del formulario de visa
+            </h1>
+
+            <p class="text-muted mb-1">
+                @Model.NombreCliente
+            </p>
+
+            <p class="text-muted small mb-0">
+                Trámite #@Model.TramiteId
+            </p>
+        </div>
+
+        <span class="badge bg-secondary fs-6">
+            @Model.EstadoCaptura
+        </span>
+
+    </div>
+
+    @if (Model.Secciones.Count == 0)
+    {
+        <div class="alert alert-info">
+            Todavía no se ha capturado información
+            en el formulario de visa.
+        </div>
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-primary">
+            Iniciar captura
+        </a>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-3">
+                    Información de control
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <div class="text-muted small">
+                            Estado del formulario
+                        </div>
+                        <div class="fw-semibold">
+                            @Model.EstadoCaptura
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small">
+                            Fecha de creación
+                        </div>
+                        <div class="fw-semibold">
+                            @Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small">
+                            Última actualización
+                        </div>
+                        <div class="fw-semibold">
+                            @Model.FechaActualizacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small">
+                            Fecha de revisión
+                        </div>
+                        <div class="fw-semibold">
+                            @(Model.FechaRevision.HasValue
+                                ? Model.FechaRevision.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                : "No registrada")
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="accordion" id="acordeonFormulario">
+
+            @for (int i = 0; i < Model.Secciones.Count; i++)
+            {
+                var seccion = Model.Secciones[i];
+                var identificador = $"seccion-{i}";
+                var encabezado = $"encabezado-{i}";
+
+                <div class="accordion-item border mb-3 rounded-3 overflow-hidden">
+
+                    <h2 class="accordion-header" id="@encabezado">
+
+                        <button class="accordion-button @(i == 0 ? "" : "collapsed") fw-semibold"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#@identificador"
+                                aria-expanded="@(i == 0 ? "true" : "false")"
+                                aria-controls="@identificador">
+
+                            @seccion.Titulo
+
+                        </button>
+
+                    </h2>
+
+                    <div id="@identificador"
+                         class="accordion-collapse collapse @(i == 0 ? "show" : "")"
+                         aria-labelledby="@encabezado"
+                         data-bs-parent="#acordeonFormulario">
+
+                        <div class="accordion-body p-4">
+
+                            <div class="d-flex justify-content-end mb-3">
+
+                                <a asp-page="@seccion.PaginaEdicion"
+                                   asp-route-id="@Model.TramiteId"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Ver sección / Editar
+                                </a>
+
+                            </div>
+
+                            @if (seccion.Campos.Count > 0)
+                            {
+                                <div class="row g-3 mb-4">
+
+                                    @foreach (var campo in seccion.Campos)
+                                    {
+                                        <div class="col-md-6">
+
+                                            <div class="small text-muted mb-1">
+                                                @campo.Etiqueta
+                                            </div>
+
+                                            @if (campo.Valor == "No registrado")
+                                            {
+                                                <div class="text-muted fst-italic">
+                                                    No registrado
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="fw-medium"
+                                                     style="white-space: pre-wrap; overflow-wrap: anywhere;">
+                                                    @campo.Valor
+                                                </div>
+                                            }
+
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                            @foreach (var tabla in seccion.Tablas)
+                            {
+                                <div class="mt-4">
+
+                                    <h3 class="h6 fw-bold mb-3">
+                                        @tabla.Titulo
+                                    </h3>
+
+                                    @if (tabla.Filas.Count == 0)
+                                    {
+                                        <div class="alert alert-light border small">
+                                            No hay registros.
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="table-responsive">
+
+                                            <table class="table table-sm table-bordered align-middle">
+
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        @foreach (var columna in tabla.Columnas)
+                                                        {
+                                                            <th>@columna</th>
+                                                        }
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+
+                                                    @foreach (var fila in tabla.Filas)
+                                                    {
+                                                        <tr>
+
+                                                            @foreach (var valor in fila)
+                                                            {
+                                                                <td style="overflow-wrap: anywhere;">
+                                                                    @valor
+                                                                </td>
+                                                            }
+
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between gap-2 mt-4">
+
+            <a asp-page="/FormulariosVisa/AcompanantesViaje"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-outline-secondary">
+                Volver a acompañantes
+            </a>
+
+            <a asp-page="/Tramites/Detalle"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-primary">
+                Volver al trámite
+            </a>
+
+        </div>
+    }
+
+</div>

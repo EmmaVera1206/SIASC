@@ -1,0 +1,435 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.InformacionComplementariaModel
+
+@{
+    ViewData["Title"] = "Información complementaria";
+}
+
+@{
+    var paginaActual = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-1">
+            Formulario de visa americana
+        </h1>
+
+        <p class="text-muted mb-1">
+            @Model.NombreCliente
+        </p>
+
+        <p class="small text-muted">
+            Trámite #@Model.TramiteId
+        </p>
+    </div>
+    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Secciones del formulario de visa">
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/DatosPersonales" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/DatosPersonales" ? "page" : null)">
+            1. Datos personales
+        </a>
+
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/PlanesViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/PlanesViaje" ? "page" : null)">
+            2. Planes y gastos
+        </a>
+
+        <a asp-page="/FormulariosVisa/HistorialVisa"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/HistorialVisa" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/HistorialVisa" ? "page" : null)">
+            3. Historial de visa
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionFamiliar"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "page" : null)">
+            4. Familia
+        </a>
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "page" : null)">
+            5. Ocupación y estudios
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionComplementaria"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "page" : null)">
+            6. Complementaria
+        </a>
+
+        <a asp-page="/FormulariosVisa/AcompananteViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "page" : null)">
+            7. Acompañantes
+        </a>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/Resumen" ? "btn-primary" : "btn-outline-primary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/Resumen" ? "page" : null)">
+            Resumen
+        </a>
+
+    </nav>
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    @if (!Model.PuedeEditar)
+    {
+        <div class="alert alert-warning">
+            Este formulario ya no está en borrador.
+            No se permiten modificaciones.
+        </div>
+    }
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3"></div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-2">
+                Redes sociales
+            </h2>
+
+            <p class="text-muted small mb-4">
+                Registra las plataformas y nombres de usuario
+                correspondientes al solicitante.
+            </p>
+
+            @if (Model.RedesSociales.Count == 0)
+            {
+                <div class="alert alert-light border">
+                    No hay redes sociales registradas.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive mb-4">
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Plataforma</th>
+                                <th>Nombre de usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var red in Model.RedesSociales)
+                            {
+                                <tr>
+                                    <td>@red.Plataforma</td>
+                                    <td>@red.NombreUsuario</td>
+                                    <td>
+                                        @if (Model.PuedeEditar)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="EliminarRed"
+                                                  asp-route-id="@Model.TramiteId"
+                                                  asp-route-redId="@red.RedSocialVisaId">
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Eliminar esta red social?');">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+            @if (Model.PuedeEditar)
+            {
+                <h3 class="h6 fw-bold mb-3">
+                    Agregar red social
+                </h3>
+
+                <form method="post" asp-page-handler="AgregarRed">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-5">
+                            <label asp-for="Plataforma"
+                                   class="form-label">
+                                Plataforma
+                            </label>
+
+                            <input asp-for="Plataforma"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. Facebook, Instagram" />
+
+                            <span asp-validation-for="Plataforma"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label asp-for="NombreUsuario"
+                                   class="form-label">
+                                Nombre de usuario
+                            </label>
+
+                            <input asp-for="NombreUsuario"
+                                   class="form-control"
+                                   maxlength="200"
+                                   placeholder="Ej. usuario.ejemplo" />
+
+                            <span asp-validation-for="NombreUsuario"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit"
+                                    class="btn btn-outline-primary w-100">
+                                Agregar
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            }
+
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-2">
+                Idiomas
+            </h2>
+
+            <p class="text-muted small mb-4">
+                Registra los idiomas que habla el solicitante.
+            </p>
+
+            @if (Model.Idiomas.Count == 0)
+            {
+                <div class="alert alert-light border">
+                    No hay idiomas registrados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive mb-4">
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Idioma</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var idioma in Model.Idiomas)
+                            {
+                                <tr>
+                                    <td>@idioma.Idioma</td>
+                                    <td>
+                                        @if (Model.PuedeEditar)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="EliminarIdioma"
+                                                  asp-route-id="@Model.TramiteId"
+                                                  asp-route-idiomaId="@idioma.IdiomaVisaId">
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Eliminar este idioma?');">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+            @if (Model.PuedeEditar)
+            {
+                <form method="post" asp-page-handler="AgregarIdioma">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-10">
+                            <label asp-for="NuevoIdioma"
+                                   class="form-label">
+                                Idioma
+                            </label>
+
+                            <input asp-for="NuevoIdioma"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. Español, Inglés, Francés" />
+
+                            <span asp-validation-for="NuevoIdioma"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit"
+                                    class="btn btn-outline-primary w-100">
+                                Agregar
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+            }
+
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-2">
+                Países visitados
+            </h2>
+
+            <p class="text-muted small mb-4">
+                Registra los países que el solicitante
+                ha visitado anteriormente.
+            </p>
+
+            @if (Model.PaisesVisitados.Count == 0)
+            {
+                <div class="alert alert-light border">
+                    No hay países visitados registrados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive mb-4">
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>País</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var pais in Model.PaisesVisitados)
+                            {
+                                <tr>
+                                    <td>@pais.Pais</td>
+                                    <td>
+                                        @if (Model.PuedeEditar)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="EliminarPais"
+                                                  asp-route-id="@Model.TramiteId"
+                                                  asp-route-paisId="@pais.PaisVisitadoId">
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Eliminar este país?');">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+            @if (Model.PuedeEditar)
+            {
+                <form method="post" asp-page-handler="AgregarPais">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-10">
+                            <label asp-for="NuevoPais"
+                                   class="form-label">
+                                País visitado
+                            </label>
+
+                            <input asp-for="NuevoPais"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. Canadá, España, Colombia" />
+
+                            <span asp-validation-for="NuevoPais"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit"
+                                    class="btn btn-outline-primary w-100">
+                                Agregar
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+            }
+
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between gap-2">
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-outline-secondary">
+            Anterior
+        </a>
+
+        <a asp-page="/Tramites/Detalle"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-primary">
+            Volver al trámite
+        </a>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

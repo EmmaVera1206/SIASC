@@ -1,0 +1,224 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Pasaportes.ResumenModel
+
+@{
+    ViewData["Title"] = "Resumen de pasaporte";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="d-flex flex-wrap justify-content-between
+        align-items-start gap-3 mt-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-2">
+                Resumen de pasaporte
+            </h1>
+
+            <p class="text-muted mb-1">
+                @Model.NombreCliente
+            </p>
+
+            <p class="small text-muted mb-1">
+                @Model.NombreServicio
+            </p>
+
+            <p class="small text-muted mb-0">
+                Trámite #@Model.TramiteId
+            </p>
+        </div>
+
+        <a asp-page="/Pasaportes/Datos"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-primary">
+
+            @(Model.TieneRegistro
+                ? "Editar datos"
+                : "Capturar datos")
+
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-3">
+                Información del trámite
+            </h2>
+
+            <dl class="row mb-0">
+
+                <dt class="col-sm-4 text-muted">
+                    Folio
+                </dt>
+
+                <dd class="col-sm-8">
+                    #@Model.TramiteId
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    Cliente
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.NombreCliente
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    Servicio
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.NombreServicio
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    Estado del trámite
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.EstadoTramite
+                </dd>
+
+            </dl>
+
+        </div>
+
+    </div>
+
+    @if (!Model.TieneRegistro)
+    {
+        <div class="alert alert-info" role="status">
+
+            Todavía no se han registrado datos de pasaporte
+            para este trámite.
+
+            Puedes comenzar desde el botón
+            <strong>Capturar datos</strong>.
+
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex flex-wrap justify-content-between
+                    align-items-center gap-2 mb-3">
+
+                    <h2 class="h5 fw-bold mb-0">
+                        CURP y verificación
+                    </h2>
+
+                    @if (Model.CurpVerificada)
+                    {
+                        <span class="badge bg-success">
+                            Verificada administrativamente
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            No verificada
+                        </span>
+                    }
+
+                </div>
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-4 text-muted">
+                        CURP
+                    </dt>
+
+                    <dd class="col-sm-8 fw-semibold text-break">
+                        @Model.Curp
+                    </dd>
+
+                    <dt class="col-sm-4 text-muted">
+                        Verificación administrativa
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @(Model.CurpVerificada ? "Sí" : "No")
+                    </dd>
+
+                    <dt class="col-sm-4 text-muted">
+                        Fecha de verificación
+                    </dt>
+
+                    <dd class="col-sm-8">
+
+                        @(Model.FechaVerificacion.HasValue
+                            ? Model.FechaVerificacion.Value
+                                .ToLocalTime()
+                                .ToString("dd/MM/yyyy HH:mm")
+                            : "No registrada")
+
+                    </dd>
+
+                </dl>
+
+                <p class="small text-muted mt-3 mb-0">
+
+                    La verificación indicada corresponde
+                    al registro administrativo interno;
+                    no representa una consulta automática
+                    a RENAPO.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-3">
+                    Observaciones
+                </h2>
+
+                <p class="mb-0"
+                   style="white-space: pre-wrap;">
+                    @(string.IsNullOrWhiteSpace(Model.Observaciones)
+                        ? "No registradas"
+                        : Model.Observaciones)
+                </p>
+
+            </div>
+
+        </div>
+    }
+
+    <div class="d-flex flex-wrap justify-content-end gap-2">
+
+        <a asp-page="/Tramites/Detalle"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-outline-secondary">
+            Volver al trámite
+        </a>
+
+        <a asp-page="/Pasaportes/Datos"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-primary">
+
+            @(Model.TieneRegistro
+                ? "Editar datos"
+                : "Capturar datos")
+
+        </a>
+
+    </div>
+
+</div>

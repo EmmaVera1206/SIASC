@@ -1,0 +1,360 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.PlanesViajeModel
+
+@{
+    ViewData["Title"] = "Planes y gastos del viaje";
+}
+
+@{
+    var paginaActual = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-1">
+            Formulario de visa americana
+        </h1>
+
+        <p class="text-muted mb-1">
+            @Model.NombreCliente
+        </p>
+
+        <p class="small text-muted">
+            Trámite #@Model.TramiteId
+        </p>
+    </div>
+
+    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Secciones del formulario de visa">
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/DatosPersonales" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/DatosPersonales" ? "page" : null)">
+            1. Datos personales
+        </a>
+
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/PlanesViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/PlanesViaje" ? "page" : null)">
+            2. Planes y gastos
+        </a>
+
+        <a asp-page="/FormulariosVisa/HistorialVisa"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/HistorialVisa" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/HistorialVisa" ? "page" : null)">
+            3. Historial de visa
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionFamiliar"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "page" : null)">
+            4. Familia
+        </a>
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "page" : null)">
+            5. Ocupación y estudios
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionComplementaria"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "page" : null)">
+            6. Complementaria
+        </a>
+
+        <a asp-page="/FormulariosVisa/AcompananteViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "page" : null)">
+            7. Acompañantes
+        </a>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/Resumen" ? "btn-primary" : "btn-outline-primary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/Resumen" ? "page" : null)">
+            Resumen
+        </a>
+
+    </nav>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    <div class="alert alert-info">
+        <strong>Sección 2:</strong>
+        Planes de viaje y responsabilidad de gastos.
+        Puedes guardar esta sección como borrador.
+    </div>
+
+    <form method="post">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Planes del viaje
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TienePlanesViaje"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.TienePlanesViaje"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaViaje"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.FechaViaje"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.MotivoViaje"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Input.MotivoViaje"
+                                  class="form-control"
+                                  maxlength="1000"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.CiudadDestino"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.CiudadDestino"
+                               class="form-control"
+                               maxlength="150" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.Hospedaje"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.Hospedaje"
+                               class="form-control"
+                               maxlength="500" />
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Empresa que visitará
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.EmpresaVisita"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.EmpresaVisita"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.DireccionEmpresaVisita"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.DireccionEmpresaVisita"
+                               class="form-control"
+                               maxlength="500" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TelefonoEmpresaVisita"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.TelefonoEmpresaVisita"
+                               class="form-control"
+                               maxlength="30" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.CorreoEmpresaVisita"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.CorreoEmpresaVisita"
+                               type="email"
+                               class="form-control"
+                               maxlength="200" />
+
+                        <span asp-validation-for="Input.CorreoEmpresaVisita"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Gastos del viaje
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.ResponsableGastos"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.ResponsableGastos"
+                                class="form-select">
+
+                            <option value="">Sin especificar</option>
+                            <option value="Solicitante">
+                                El solicitante
+                            </option>
+                            <option value="Familiar">
+                                Un familiar
+                            </option>
+                            <option value="Empresa">
+                                Una empresa
+                            </option>
+                            <option value="Otra persona">
+                                Otra persona
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.NombrePatrocinador"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.NombrePatrocinador"
+                               class="form-control"
+                               maxlength="200" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.ParentescoPatrocinador"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.ParentescoPatrocinador"
+                               class="form-control"
+                               maxlength="100" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TelefonoPatrocinador"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.TelefonoPatrocinador"
+                               class="form-control"
+                               maxlength="30" />
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+
+            <a asp-page="/FormulariosVisa/DatosPersonales"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-outline-secondary">
+                Anterior
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Guardar borrador
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

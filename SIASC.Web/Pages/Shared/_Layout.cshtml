@@ -1,0 +1,146 @@
+﻿
+@using Microsoft.AspNetCore.Identity
+@using SIASC.Infrastructure.Identity
+@inject UserManager<UsuarioSistema> UserManager
+
+@{
+    var usuarioActual = User.Identity?.IsAuthenticated == true
+        ? await UserManager.GetUserAsync(User)
+        : null;
+
+    var nombreUsuario = usuarioActual?.NombreCompleto
+        ?? User.Identity?.Name
+        ?? "Usuario";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - SIASC</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/SIASC.Web.styles.css"
+          asp-append-version="true" />
+</head>
+
+<body class="bg-light">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container-fluid px-4">
+
+                <a class="navbar-brand fw-bold"
+                   asp-page="/Index">
+                    SIASC
+                </a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#menuPrincipal"
+                            aria-controls="menuPrincipal"
+                            aria-expanded="false"
+                            aria-label="Mostrar menú">
+
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse"
+                         id="menuPrincipal">
+
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-page="/Index">
+                                    Inicio
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-page="/Clientes/Index">
+                                    Clientes
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-page="/Tramites/Index">
+                                    Trámites
+                                </a>
+                            </li>
+
+                        </ul>
+
+                        <div class="d-flex flex-column flex-lg-row
+                                    align-items-lg-center gap-3">
+
+                            <span class="text-white small">
+                                @nombreUsuario
+                            </span>
+
+                            <form method="post"
+                                  asp-page="/Cuenta/CerrarSesion"
+                                  class="m-0">
+
+                                <button type="submit"
+                                        class="btn btn-outline-light btn-sm">
+                                    Cerrar sesión
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid px-4 py-4">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top bg-white text-muted py-3 mt-4">
+        <div class="container-fluid px-4">
+            <small>
+                &copy; @DateTime.Now.Year - SIASC |
+                Sistema Integral de Administración
+                y Seguimiento de Clientes
+            </small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

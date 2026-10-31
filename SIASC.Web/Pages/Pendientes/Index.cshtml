@@ -1,0 +1,229 @@
+﻿@page
+@model SIASC.Web.Pages.Pendientes.IndexModel
+
+@{
+    ViewData["Title"] = "Gestión de pendientes";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Gestión de pendientes</h1>
+            <p class="text-muted mb-0">
+                Organiza y da seguimiento a las actividades de la agencia.
+            </p>
+        </div>
+
+        <a asp-page="/Pendientes/Crear" class="btn btn-primary">
+            Registrar pendiente
+        </a>
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-3">
+                    <div class="small text-muted">Total de actividades</div>
+                    <div class="h3 fw-bold mb-0">@Model.Pendientes.Count</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-3">
+                    <div class="small text-muted">Actividades abiertas</div>
+                    <div class="h3 fw-bold mb-0">@Model.TotalAbiertos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-3">
+                    <div class="small text-muted">Actividades completadas</div>
+                    <div class="h3 fw-bold mb-0">@Model.TotalCompletados</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <h2 class="h5 fw-bold mb-0">Actividades registradas</h2>
+                <span class="badge bg-secondary">
+                    @Model.Pendientes.Count registro(s)
+                </span>
+            </div>
+
+            @if (Model.Pendientes.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h3 class="h6 fw-semibold">No hay pendientes registrados</h3>
+                    <p class="text-muted">
+                        Registra una actividad para comenzar a organizar el trabajo.
+                    </p>
+                    <a asp-page="/Pendientes/Crear"
+                       class="btn btn-outline-primary">
+                        Registrar primer pendiente
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Actividad</th>
+                                <th>Trámite</th>
+                                <th>Fecha límite</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var pendiente in Model.Pendientes)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">
+                                            @pendiente.Titulo
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(pendiente.Descripcion))
+                                        {
+                                            <div class="small text-muted"
+                                                 style="white-space: pre-wrap;">
+                                                @pendiente.Descripcion
+                                            </div>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (pendiente.TramiteId.HasValue)
+                                        {
+                                            <div class="fw-semibold">
+                                                #@pendiente.TramiteId
+                                            </div>
+                                            <div class="small text-muted">
+                                                @pendiente.NombreCliente
+                                            </div>
+                                            <div class="small text-muted">
+                                                @pendiente.NombreServicio
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">General</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (pendiente.FechaVencimiento.HasValue)
+                                        {
+                                            <div>
+                                                @pendiente.FechaVencimiento.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </div>
+
+                                            @if (pendiente.EstaVencido)
+                                            {
+                                                <span class="badge bg-danger mt-1">
+                                                    Vencido
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                Sin fecha límite
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (pendiente.Prioridad == "Alta")
+                                        {
+                                            <span class="badge bg-danger">Alta</span>
+                                        }
+                                        else if (pendiente.Prioridad == "Media")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Media
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @pendiente.Prioridad
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (pendiente.Estado == "Completado")
+                                        {
+                                            <span class="badge bg-success">
+                                                Completado
+                                            </span>
+                                        }
+                                        else if (pendiente.Estado == "EnProceso")
+                                        {
+                                            <span class="badge bg-primary">
+                                                En proceso
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @pendiente.Estado
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <a asp-page="/Pendientes/Editar"
+                                               asp-route-id="@pendiente.PendienteId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                @(pendiente.PuedeEditar
+                                                    ? "Administrar"
+                                                    : "Consultar")
+                                            </a>
+
+                                            @if (pendiente.TramiteId.HasValue)
+                                            {
+                                                <a asp-page="/Tramites/Detalle"
+                                                   asp-route-id="@pendiente.TramiteId"
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    Ver trámite
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

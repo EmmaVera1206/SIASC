@@ -1,0 +1,152 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Pagos.AnularModel
+
+@{
+    ViewData["Title"] = "Anular pago";
+    var cultura = new System.Globalization.CultureInfo("es-MX");
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <a asp-page="/Tramites/Detalle"
+           asp-route-id="@Model.Pago!.TramiteId"
+           class="text-decoration-none small">
+            &larr; Volver al trámite
+        </a>
+
+        <h1 class="h3 fw-bold mt-3">
+            Anulación de pago
+        </h1>
+
+        <p class="text-muted">
+            Revisa la información antes de confirmar la anulación.
+        </p>
+    </div>
+
+    <div class="alert alert-warning">
+        <strong>Importante:</strong>
+        Esta operación conservará el registro original del pago,
+        pero dejará de considerarlo en los cálculos financieros.
+        La anulación quedará registrada en el historial de auditoría.
+    </div>
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                Información del pago #@Model.Pago!.PagoId
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <dl class="row mb-0">
+
+                <dt class="col-sm-4">Cliente</dt>
+                <dd class="col-sm-8">
+                    @Model.Pago.NombreCliente
+                </dd>
+
+                <dt class="col-sm-4">Trámite</dt>
+                <dd class="col-sm-8">
+                    #@Model.Pago.TramiteId -
+                    @Model.Pago.NombreServicio
+                </dd>
+
+                <dt class="col-sm-4">Fecha del pago</dt>
+                <dd class="col-sm-8">
+                    @Model.Pago.FechaPago.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-4">Importe</dt>
+                <dd class="col-sm-8 fw-bold">
+                    @Model.Pago.Monto.ToString("C2", cultura)
+                </dd>
+
+                <dt class="col-sm-4">Método de pago</dt>
+                <dd class="col-sm-8">
+                    @Model.Pago.MetodoPago
+                </dd>
+
+                <dt class="col-sm-4">Tipo de pago</dt>
+                <dd class="col-sm-8">
+                    @Model.Pago.TipoPago
+                </dd>
+
+                <dt class="col-sm-4">Referencia</dt>
+                <dd class="col-sm-8">
+                    @(string.IsNullOrWhiteSpace(Model.Pago.Referencia)
+                        ? "Sin referencia"
+                        : Model.Pago.Referencia)
+                </dd>
+
+            </dl>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">
+                Confirmar anulación
+            </h5>
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Datos.Motivo"
+                           class="form-label fw-semibold">
+                        Motivo de anulación
+                    </label>
+
+                    <textarea asp-for="Datos.Motivo"
+                              class="form-control"
+                              rows="4"
+                              maxlength="1000"
+                              placeholder="Explica por qué se está anulando este pago..."
+                              required></textarea>
+
+                    <span asp-validation-for="Datos.Motivo"
+                          class="text-danger small"></span>
+
+                    <div class="form-text">
+                        Escribe una justificación de al menos 10 caracteres.
+                        Este motivo quedará registrado permanentemente.
+                    </div>
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button type="submit"
+                            class="btn btn-danger"
+                            onclick="return confirm('¿Confirmas que deseas anular este pago? Esta operación quedará registrada en la auditoría.');">
+                        Confirmar anulación
+                    </button>
+
+                    <a asp-page="/Tramites/Detalle"
+                       asp-route-id="@Model.Pago.TramiteId"
+                       class="btn btn-outline-secondary">
+                        Cancelar y volver
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

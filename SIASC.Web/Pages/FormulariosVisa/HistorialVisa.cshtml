@@ -1,0 +1,472 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.HistorialVisaModel
+
+@{
+    ViewData["Title"] = "Historial de visas";
+}
+
+@{
+    var paginaActual = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="mt-3 mb-4">
+        <h1 class="h3 fw-bold mb-1">
+            Formulario de visa americana
+        </h1>
+
+        <p class="text-muted mb-1">
+            @Model.NombreCliente
+        </p>
+
+        <p class="small text-muted">
+            Trámite #@Model.TramiteId
+        </p>
+    </div>
+    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Secciones del formulario de visa">
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/DatosPersonales" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/DatosPersonales" ? "page" : null)">
+            1. Datos personales
+        </a>
+
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/PlanesViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/PlanesViaje" ? "page" : null)">
+            2. Planes y gastos
+        </a>
+
+        <a asp-page="/FormulariosVisa/HistorialVisa"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/HistorialVisa" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/HistorialVisa" ? "page" : null)">
+            3. Historial de visa
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionFamiliar"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "page" : null)">
+            4. Familia
+        </a>
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "page" : null)">
+            5. Ocupación y estudios
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionComplementaria"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "page" : null)">
+            6. Complementaria
+        </a>
+
+        <a asp-page="/FormulariosVisa/AcompananteViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "page" : null)">
+            7. Acompañantes
+        </a>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/Resumen" ? "btn-primary" : "btn-outline-primary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/Resumen" ? "page" : null)">
+            Resumen
+        </a>
+
+    </nav>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    @if (!Model.PuedeEditar)
+    {
+        <div class="alert alert-warning">
+            Este formulario ya no está en borrador.
+            No se permiten modificaciones.
+        </div>
+    }
+
+    <form method="post"
+          asp-page-handler="Guardar">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Antecedentes migratorios
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.HaVisitadoEstadosUnidos"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.HaVisitadoEstadosUnidos"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.HaTenidoVisa"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.HaTenidoVisa"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Negativas de visa
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.VisaNegada"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.VisaNegada"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaNegativa"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.FechaNegativa"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.DetalleNegativa"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Input.DetalleNegativa"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Cancelaciones de visa
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.VisaCancelada"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.VisaCancelada"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.FechaCancelacionVisa"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.FechaCancelacionVisa"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.DetalleCancelacionVisa"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Input.DetalleCancelacionVisa"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Extravío o robo de visa
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.VisaExtraviadaORobada"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.VisaExtraviadaORobada"
+                                class="form-select">
+                            <option value="">Sin responder</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.DetalleExtravíoVisa"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Input.DetalleExtravíoVisa"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-4">
+
+            <a asp-page="/FormulariosVisa/PlanesViaje"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-outline-secondary">
+                Anterior
+            </a>
+
+            @if (Model.PuedeEditar)
+            {
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar antecedentes
+                </button>
+            }
+
+        </div>
+
+    </form>
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-2">
+                Visitas anteriores a Estados Unidos
+            </h2>
+
+            <p class="text-muted small mb-4">
+                Registra cada visita anterior por separado.
+            </p>
+
+            @if (Model.Visitas.Count == 0)
+            {
+                <div class="alert alert-light border">
+                    No hay visitas anteriores registradas.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive mb-4">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha de visita</th>
+                                <th>Duración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var visita in Model.Visitas)
+                            {
+                                <tr>
+                                    <td>
+                                        @(visita.FechaVisita.HasValue
+                                            ? visita.FechaVisita.Value.ToString("dd/MM/yyyy")
+                                            : "Sin fecha")
+                                    </td>
+
+                                    <td>
+                                        @visita.DuracionEstancia
+                                    </td>
+
+                                    <td>
+
+                                        @if (Model.PuedeEditar)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="EliminarVisita"
+                                                  asp-route-id="@Model.TramiteId"
+                                                  asp-route-visitaId="@visita.VisitaAnteriorEEUUId">
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Eliminar esta visita?');">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+            @if (Model.PuedeEditar)
+            {
+                <h3 class="h6 fw-bold mb-3">
+                    Agregar visita anterior
+                </h3>
+
+                <form method="post"
+                      asp-page-handler="AgregarVisita">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-5">
+
+                            <label asp-for="NuevaVisita.FechaVisita"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="NuevaVisita.FechaVisita"
+                                   type="date"
+                                   class="form-control" />
+
+                            <span asp-validation-for="NuevaVisita.FechaVisita"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-5">
+
+                            <label asp-for="NuevaVisita.DuracionEstancia"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="NuevaVisita.DuracionEstancia"
+                                   class="form-control"
+                                   maxlength="100"
+                                   placeholder="Ej. 7 días" />
+
+                            <span asp-validation-for="NuevaVisita.DuracionEstancia"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+
+                            <button type="submit"
+                                    class="btn btn-outline-primary w-100">
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

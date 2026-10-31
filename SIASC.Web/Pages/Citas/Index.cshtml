@@ -1,0 +1,218 @@
+﻿@page
+@model SIASC.Web.Pages.Citas.IndexModel
+
+@{
+    ViewData["Title"] = "Gestión de citas";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between
+        align-items-start flex-wrap gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Gestión de citas
+            </h1>
+
+            <p class="text-muted mb-0">
+                Consulta y administra las citas registradas
+                para los trámites.
+            </p>
+        </div>
+
+        <a asp-page="/Citas/Crear"
+           class="btn btn-primary">
+            Registrar cita
+        </a>
+
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between
+                align-items-center flex-wrap gap-2 mb-4">
+
+                <h2 class="h5 fw-bold mb-0">
+                    Citas registradas
+                </h2>
+
+                <span class="badge bg-secondary">
+                    @Model.Citas.Count cita(s)
+                </span>
+
+            </div>
+
+            @if (Model.Citas.Count == 0)
+            {
+                <div class="text-center py-5">
+
+                    <h3 class="h6 fw-semibold">
+                        No hay citas registradas
+                    </h3>
+
+                    <p class="text-muted">
+                        Registra la primera cita para comenzar
+                        a organizar la agenda.
+                    </p>
+
+                    <a asp-page="/Citas/Crear"
+                       class="btn btn-outline-primary">
+                        Registrar primera cita
+                    </a>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo de cita</th>
+                                <th>Cliente</th>
+                                <th>Trámite</th>
+                                <th>Lugar</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var cita in Model.Citas)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @if (cita.FechaProgramada.HasValue)
+                                        {
+                                            <span class="fw-semibold">
+                                                @cita.FechaProgramada.Value.ToString("dd/MM/yyyy")
+                                            </span>
+
+                                            <div class="small text-muted">
+                                                @cita.FechaProgramada.Value.ToString("HH:mm")
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                Sin fecha
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @cita.TipoCita
+                                    </td>
+
+                                    <td>
+                                        @cita.NombreCliente
+                                    </td>
+
+                                    <td>
+                                        <div class="fw-semibold">
+                                            #@cita.TramiteId
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            @cita.NombreServicio
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(cita.Lugar)
+                                            ? "No especificado"
+                                            : cita.Lugar)
+                                    </td>
+
+                                    <td>
+                                        @if (cita.EstadoCita == "Confirmada")
+                                        {
+                                            <span class="badge bg-success">
+                                                Confirmada
+                                            </span>
+                                        }
+                                        else if (cita.EstadoCita == "Tentativa")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Tentativa
+                                            </span>
+                                        }
+                                        else if (cita.EstadoCita == "Realizada")
+                                        {
+                                            <span class="badge bg-primary">
+                                                Realizada
+                                            </span>
+                                        }
+                                        else if (cita.EstadoCita == "Cancelada")
+                                        {
+                                            <span class="badge bg-danger">
+                                                Cancelada
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @cita.EstadoCita
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <a asp-page="/Citas/Editar"
+                                               asp-route-id="@cita.CitaId"
+                                               class="btn btn-sm btn-outline-primary">
+
+                                                @(cita.PuedeEditar
+                                                    ? "Administrar"
+                                                    : "Consultar")
+                                            </a>
+
+                                            <a asp-page="/Tramites/Detalle"
+                                               asp-route-id="@cita.TramiteId"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                Ver trámite
+                                            </a>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

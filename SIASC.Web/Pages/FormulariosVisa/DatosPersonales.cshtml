@@ -1,0 +1,400 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.FormulariosVisa.DatosPersonalesModel
+
+@{
+    ViewData["Title"] = "Datos personales - Visa americana";
+}
+
+@{
+    var paginaActual = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="d-flex justify-content-between
+        align-items-start flex-wrap gap-3 mt-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Formulario de visa americana
+            </h1>
+
+            <p class="text-muted mb-1">
+                @Model.NombreCliente
+            </p>
+
+            <p class="small text-muted mb-0">
+                Trámite #@Model.TramiteId
+            </p>
+        </div>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-outline-primary">
+            Ver resumen general
+        </a>
+
+    </div>
+
+    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Secciones del formulario de visa">
+
+        <a asp-page="/FormulariosVisa/DatosPersonales"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/DatosPersonales" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/DatosPersonales" ? "page" : null)">
+            1. Datos personales
+        </a>
+
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/PlanesViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/PlanesViaje" ? "page" : null)">
+            2. Planes y gastos
+        </a>
+
+        <a asp-page="/FormulariosVisa/HistorialVisa"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/HistorialVisa" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/HistorialVisa" ? "page" : null)">
+            3. Historial de visa
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionFamiliar"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionFamiliar" ? "page" : null)">
+            4. Familia
+        </a>
+
+        <a asp-page="/FormulariosVisa/OcupacionEstudios"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/OcupacionEstudios" ? "page" : null)">
+            5. Ocupación y estudios
+        </a>
+
+        <a asp-page="/FormulariosVisa/InformacionComplementaria"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/InformacionComplementaria" ? "page" : null)">
+            6. Complementaria
+        </a>
+
+        <a asp-page="/FormulariosVisa/AcompananteViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "btn-primary" : "btn-outline-secondary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/AcompananteViaje" ? "page" : null)">
+            7. Acompañantes
+        </a>
+
+        <a asp-page="/FormulariosVisa/Resumen"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-sm @(paginaActual == "/FormulariosVisa/Resumen" ? "btn-primary" : "btn-outline-primary")"
+           aria-current="@(paginaActual == "/FormulariosVisa/Resumen" ? "page" : null)">
+            Resumen
+        </a>
+
+    </nav>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    <div class="alert alert-info">
+        <strong>Sección 1:</strong>
+        Datos personales y de contacto.
+        Puedes guardar información incompleta y continuar después.
+    </div>
+
+    <form method="post">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Información personal
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.NombreSegunPasaporte"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.NombreSegunPasaporte"
+                               class="form-control"
+                               maxlength="200" />
+
+                        <span asp-validation-for="Input.NombreSegunPasaporte"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.Sexo"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.Sexo"
+                                class="form-select">
+
+                            <option value="">
+                                Sin especificar
+                            </option>
+
+                            <option value="Masculino">
+                                Masculino
+                            </option>
+
+                            <option value="Femenino">
+                                Femenino
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.EstadoCivil"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.EstadoCivil"
+                                class="form-select">
+
+                            <option value="">
+                                Sin especificar
+                            </option>
+
+                            <option value="Soltero">
+                                Soltero
+                            </option>
+
+                            <option value="Casado">
+                                Casado
+                            </option>
+
+                            <option value="Divorciado">
+                                Divorciado
+                            </option>
+
+                            <option value="Viudo">
+                                Viudo
+                            </option>
+
+                            <option value="Separado">
+                                Separado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.Nacionalidad"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.Nacionalidad"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="Ej. Mexicana" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TieneOtraNacionalidad"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.TieneOtraNacionalidad"
+                                class="form-select">
+
+                            <option value="">
+                                Sin responder
+                            </option>
+
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.OtraNacionalidad"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.OtraNacionalidad"
+                               class="form-control"
+                               maxlength="100" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.ResideEnOtroPais"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Input.ResideEnOtroPais"
+                                class="form-select">
+
+                            <option value="">
+                                Sin responder
+                            </option>
+
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.PaisResidencia"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.PaisResidencia"
+                               class="form-control"
+                               maxlength="100" />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Información de contacto
+                </h2>
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.DomicilioParticular"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Input.DomicilioParticular"
+                                  class="form-control"
+                                  maxlength="500"
+                                  rows="3">
+                        </textarea>
+
+                        <span asp-validation-for="Input.DomicilioParticular"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TelefonoParticular"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.TelefonoParticular"
+                               class="form-control"
+                               maxlength="30" />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Input.TelefonoAdicional"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.TelefonoAdicional"
+                               class="form-control"
+                               maxlength="30" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Input.CorreoPersonal"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Input.CorreoPersonal"
+                               type="email"
+                               class="form-control"
+                               maxlength="200" />
+
+                        <span asp-validation-for="Input.CorreoPersonal"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+
+            <a asp-page="/Tramites/Detalle"
+               asp-route-id="@Model.TramiteId"
+               class="btn btn-outline-secondary">
+                Volver
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Guardar borrador
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="d-flex justify-content-end mt-3">
+        <a asp-page="/FormulariosVisa/PlanesViaje"
+           asp-route-id="@Model.TramiteId"
+           class="btn btn-outline-primary">
+            Siguiente: planes de viaje &rarr;
+        </a>
+    </div>
+    <p class="small text-muted text-end mt-2">Guarda los cambios antes de pasar a otra sección.</p>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

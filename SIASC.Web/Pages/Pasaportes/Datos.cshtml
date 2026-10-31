@@ -1,0 +1,149 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Pasaportes.DatosModel
+
+@{
+    ViewData["Title"] = "Datos de pasaporte";
+}
+
+<div class="container py-4">
+    <a asp-page="/Tramites/Detalle"
+       asp-route-id="@Model.TramiteId"
+       class="text-decoration-none small">
+        &larr; Volver al trámite
+    </a>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mt-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-2">Datos de pasaporte</h1>
+            <p class="text-muted mb-1">@Model.NombreCliente</p>
+            <p class="small text-muted mb-1">@Model.NombreServicio</p>
+            <p class="small text-muted">Trámite #@Model.TramiteId</p>
+        </div>
+        @if (Model.CURPVerificada)
+        {
+            <span class="badge bg-success fs-6">CURP verificada</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary fs-6">CURP no verificada</span>
+        }
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    @if (TempData["MensajeError"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["MensajeError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+
+    <div class="alert alert-info">
+        <strong>Información de captura:</strong>
+        Registra la CURP del solicitante y las observaciones correspondientes al trámite.
+        La verificación es administrativa y no representa una consulta oficial a RENAPO.
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+            <h2 class="h5 fw-bold mb-4">Información del solicitante</h2>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="row g-4">
+                    <div class="col-12">
+                        <label asp-for="Input.CURP" class="form-label fw-semibold">CURP</label>
+                        <input asp-for="Input.CURP"
+                               class="form-control text-uppercase"
+                               maxlength="18"
+                               autocomplete="off"
+                               spellcheck="false"
+                               placeholder="Ej. XXXX000000XXXXXX00" />
+                        <span asp-validation-for="Input.CURP" class="text-danger small"></span>
+                        <div class="form-text">
+                            Ingresa los 18 caracteres de la CURP. El sistema convertirá las letras a mayúsculas.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Input.Observaciones" class="form-label fw-semibold">Observaciones</label>
+                        <textarea asp-for="Input.Observaciones"
+                                  class="form-control"
+                                  maxlength="2000"
+                                  rows="5"
+                                  placeholder="Escribe información relevante sobre el trámite."></textarea>
+                        <span asp-validation-for="Input.Observaciones" class="text-danger small"></span>
+                        <div class="form-text">Máximo 2000 caracteres.</div>
+                    </div>
+                </div>
+                <hr class="my-4" />
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <a asp-page="/Tramites/Detalle"
+                       asp-route-id="@Model.TramiteId"
+                       class="btn btn-outline-secondary">Volver al trámite</a>
+                    <button type="submit" class="btn btn-primary">
+                        @(Model.TieneRegistro ? "Guardar cambios" : "Guardar datos")
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h2 class="h5 fw-bold mb-3">Estado de verificación</h2>
+            <dl class="row mb-3">
+                <dt class="col-sm-5 text-muted">Registro de pasaporte</dt>
+                <dd class="col-sm-7">@(Model.TieneRegistro ? "Registrado" : "Pendiente de captura")</dd>
+                <dt class="col-sm-5 text-muted">CURP verificada</dt>
+                <dd class="col-sm-7">@(Model.CURPVerificada ? "Sí" : "No")</dd>
+                <dt class="col-sm-5 text-muted">Fecha de verificación</dt>
+                <dd class="col-sm-7">
+                    @(Model.FechaVerificacion.HasValue
+                        ? Model.FechaVerificacion.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        : "No registrada")
+                </dd>
+            </dl>
+
+            @if (!Model.TieneRegistro)
+            {
+                <p class="text-muted mb-0">Guarda primero los datos para habilitar la verificación.</p>
+            }
+            else if (!Model.CURPVerificada)
+            {
+                <p class="small text-muted">
+                    Marca la CURP como verificada solo después de revisarla mediante el procedimiento administrativo correspondiente.
+                    Guarda cualquier cambio pendiente antes de confirmar.
+                </p>
+                <form method="post" asp-page-handler="Verificar" asp-route-id="@Model.TramiteId">
+                    <input type="hidden" name="curpConfirmada" value="@Model.Input.CURP" />
+                    <button type="submit" class="btn btn-success">
+                        Marcar CURP como verificada
+                    </button>
+                </form>
+            }
+            else
+            {
+                <p class="small text-muted">
+                    Puedes retirar la verificación si detectas un error o necesitas revisar nuevamente la CURP.
+                    Guarda cualquier cambio pendiente antes de continuar.
+                </p>
+                <form method="post" asp-page-handler="RetirarVerificacion" asp-route-id="@Model.TramiteId">
+                    <input type="hidden" name="curpConfirmada" value="@Model.Input.CURP" />
+                    <button type="submit" class="btn btn-outline-danger">
+                        Retirar verificación
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

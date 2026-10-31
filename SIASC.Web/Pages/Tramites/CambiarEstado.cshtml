@@ -1,0 +1,152 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Tramites.CambiarEstadoModel
+
+@{
+    ViewData["Title"] = "Cambiar estado";
+}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <a asp-page="/Tramites/Detalle"
+               asp-route-id="@Model.TramiteId"
+               class="text-decoration-none small">
+                &larr; Volver al trámite
+            </a>
+
+            <h1 class="h3 fw-bold mt-3 mb-4">
+                Cambiar estado del trámite #@Model.TramiteId
+            </h1>
+
+            @if (TempData["MensajeExito"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["MensajeExito"]
+                </div>
+            }
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-4">
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Cliente</dt>
+                        <dd class="col-sm-8">
+                            @Model.NombreCliente
+                        </dd>
+
+                        <dt class="col-sm-4">Servicio</dt>
+                        <dd class="col-sm-8">
+                            @Model.NombreServicio
+                        </dd>
+
+                        <dt class="col-sm-4">Estado actual</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-primary">
+                                @Model.EstadoActual
+                            </span>
+                        </dd>
+                    </dl>
+
+                    <hr />
+
+                    @if (Model.EstadosDisponibles.Count == 0)
+                    {
+                        <div class="alert alert-info mb-0">
+                            Este trámite no tiene cambios de estado
+                            disponibles.
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post">
+
+                            <div asp-validation-summary="ModelOnly"
+                                 class="text-danger mb-3">
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label asp-for="Input.EstadoNuevoId"
+                                       class="form-label fw-semibold">
+                                    Nuevo estado
+                                </label>
+
+                                <select asp-for="Input.EstadoNuevoId"
+                                        asp-items="Model.EstadosDisponibles"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Selecciona el nuevo estado
+                                    </option>
+
+                                </select>
+
+                                <span asp-validation-for="Input.EstadoNuevoId"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label asp-for="Input.MotivoCambio"
+                                       class="form-label fw-semibold">
+                                    Motivo del cambio
+                                </label>
+
+                                <textarea asp-for="Input.MotivoCambio"
+                                          class="form-control"
+                                          rows="4"
+                                          maxlength="1000"
+                                          placeholder="Describe el motivo del cambio">
+                                </textarea>
+
+                                <span asp-validation-for="Input.MotivoCambio"
+                                      class="text-danger small">
+                                </span>
+
+                                <div class="form-text">
+                                    Obligatorio para cancelar el trámite.
+                                    Opcional para los demás cambios.
+                                </div>
+
+                            </div>
+
+                            <div class="alert alert-warning small">
+                                El cambio quedará registrado en el historial
+                                junto con la fecha y el usuario responsable.
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <a asp-page="/Tramites/Detalle"
+                                   asp-route-id="@Model.TramiteId"
+                                   class="btn btn-outline-secondary">
+                                    Cancelar operación
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Guardar cambio
+                                </button>
+
+                            </div>
+
+                        </form>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

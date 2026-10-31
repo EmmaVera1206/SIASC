@@ -1,0 +1,118 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Clientes.EditarModel
+
+@{
+    ViewData["Title"] = "Editar cliente";
+}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <div class="mb-4">
+                <h1 class="h3 fw-bold">
+                    Editar cliente
+                </h1>
+
+                <p class="text-muted">
+                    Actualiza la información general del cliente.
+                    Los cambios no afectarán sus trámites registrados.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-4">
+
+                    <form method="post"
+                          asp-route-id="@Model.ClienteId">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.NombreCompleto"
+                                   class="form-label fw-semibold">
+                            </label>
+
+                            <input asp-for="Input.NombreCompleto"
+                                   class="form-control"
+                                   maxlength="200" />
+
+                            <span asp-validation-for="Input.NombreCompleto"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Telefono"
+                                   class="form-label fw-semibold">
+                            </label>
+
+                            <input asp-for="Input.Telefono"
+                                   class="form-control"
+                                   type="tel"
+                                   maxlength="20" />
+
+                            <span asp-validation-for="Input.Telefono"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.CorreoElectronico"
+                                   class="form-label fw-semibold">
+                            </label>
+
+                            <input asp-for="Input.CorreoElectronico"
+                                   class="form-control"
+                                   type="email"
+                                   maxlength="200" />
+
+                            <span asp-validation-for="Input.CorreoElectronico"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Input.RecomendadoPor"
+                                   class="form-label fw-semibold">
+                            </label>
+
+                            <input asp-for="Input.RecomendadoPor"
+                                   class="form-control"
+                                   maxlength="200" />
+
+                            <span asp-validation-for="Input.RecomendadoPor"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-page="/Clientes/Index"
+                               class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

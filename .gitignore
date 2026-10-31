@@ -1,0 +1,56 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Compilaciones de .NET
+**/bin/
+**/obj/
+artifacts/
+TestResults/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+*.bak
+*.cache
+
+# Base de datos SQLite
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Mantener carpetas sin compartir datos
+SIASC.Web/App_Data/*
+!SIASC.Web/App_Data/.gitkeep
+
+# Configuraciones locales y secretos
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+.env
+.env.*
+!.env.example
+
+# Certificados y claves privadas
+*.pfx
+*.p12
+*.key
+*.pem
+
+# Archivos publicados
+publish/
+**/publish/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Paquetes locales
+packages/
+*.nupkg

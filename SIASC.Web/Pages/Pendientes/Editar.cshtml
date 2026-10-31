@@ -1,0 +1,259 @@
+﻿@page "{id:int}"
+@model SIASC.Web.Pages.Pendientes.EditarModel
+
+@{
+    ViewData["Title"] = "Administrar pendiente";
+}
+
+<div class="container py-4">
+
+    <a asp-page="/Pendientes/Index"
+       class="text-decoration-none small">
+        &larr; Volver a pendientes
+    </a>
+
+    <div class="d-flex justify-content-between
+        align-items-start flex-wrap gap-3 mt-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Administrar pendiente #@Model.PendienteId
+            </h1>
+            <p class="text-muted mb-0">
+                Consulta y actualiza la actividad registrada.
+            </p>
+        </div>
+
+        @if (Model.EstadoActual == "Completado")
+        {
+            <span class="badge bg-success">Completado</span>
+        }
+        else if (Model.EstadoActual == "EnProceso")
+        {
+            <span class="badge bg-primary">En proceso</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary">@Model.EstadoActual</span>
+        }
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["MensajeExito"]
+        </div>
+    }
+
+    @if (TempData["MensajeError"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["MensajeError"]
+        </div>
+    }
+
+    @if (!Model.PuedeEditar)
+    {
+        <div class="alert alert-info">
+            Esta actividad ya fue completada.
+            Su información se conserva para consulta.
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-4">
+                Información de la actividad
+            </h2>
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <fieldset disabled="@(!Model.PuedeEditar)">
+
+                    <div class="mb-3">
+                        <label asp-for="Entrada.TramiteId"
+                               class="form-label fw-semibold">
+                            Trámite asociado
+                        </label>
+
+                        <select asp-for="Entrada.TramiteId"
+                                asp-items="Model.TramitesDisponibles"
+                                class="form-select">
+                            <option value="">
+                                Pendiente general de la agencia
+                            </option>
+                        </select>
+
+                        <span asp-validation-for="Entrada.TramiteId"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Entrada.Titulo"
+                               class="form-label fw-semibold">
+                            Título *
+                        </label>
+
+                        <input asp-for="Entrada.Titulo"
+                               class="form-control"
+                               maxlength="200" />
+
+                        <span asp-validation-for="Entrada.Titulo"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Entrada.Descripcion"
+                               class="form-label fw-semibold">
+                            Descripción
+                        </label>
+
+                        <textarea asp-for="Entrada.Descripcion"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="2000"></textarea>
+
+                        <span asp-validation-for="Entrada.Descripcion"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-6">
+                            <label asp-for="Entrada.FechaVencimiento"
+                                   class="form-label fw-semibold">
+                                Fecha límite
+                            </label>
+
+                            <input asp-for="Entrada.FechaVencimiento"
+                                   type="datetime-local"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Entrada.FechaVencimiento"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Entrada.Prioridad"
+                                   class="form-label fw-semibold">
+                                Prioridad *
+                            </label>
+
+                            <select asp-for="Entrada.Prioridad"
+                                    class="form-select">
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                            </select>
+
+                            <span asp-validation-for="Entrada.Prioridad"
+                                  class="text-danger small"></span>
+                        </div>
+
+                    </div>
+
+                </fieldset>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    @if (Model.PuedeEditar)
+                    {
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Guardar cambios
+                        </button>
+                    }
+
+                    @if (Model.Entrada.TramiteId.HasValue)
+                    {
+                        <a asp-page="/Tramites/Detalle"
+                           asp-route-id="@Model.Entrada.TramiteId"
+                           class="btn btn-outline-secondary">
+                            Ver trámite
+                        </a>
+                    }
+
+                    <a asp-page="/Pendientes/Index"
+                       class="btn btn-outline-secondary">
+                        Volver al listado
+                    </a>
+
+                </div>
+
+            </form>
+
+            @if (Model.EstadoActual == "Completado" &&
+                 Model.FechaFinalizacion.HasValue)
+            {
+                <div class="small text-muted mt-4">
+                    Fecha de finalización:
+                    @Model.FechaFinalizacion.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </div>
+            }
+
+        </div>
+    </div>
+
+    @if (Model.PuedeEditar)
+    {
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-2">
+                    Actualizar estado
+                </h2>
+
+                <p class="text-muted small mb-4">
+                    Guarda primero los cambios del formulario.
+                    Los botones siguientes actualizan únicamente
+                    el estado de la actividad.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    @if (Model.EstadoActual == "Pendiente")
+                    {
+                        <form method="post"
+                              asp-page-handler="CambiarEstado"
+                              asp-route-id="@Model.PendienteId">
+
+                            <input type="hidden"
+                                   name="nuevoEstado"
+                                   value="EnProceso" />
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Iniciar actividad
+                            </button>
+                        </form>
+                    }
+
+                    <form method="post"
+                          asp-page-handler="CambiarEstado"
+                          asp-route-id="@Model.PendienteId">
+
+                        <input type="hidden"
+                               name="nuevoEstado"
+                               value="Completado" />
+
+                        <button type="submit"
+                                class="btn btn-success"
+                                onclick="return confirm('¿Marcar esta actividad como completada?');">
+                            Marcar como completado
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

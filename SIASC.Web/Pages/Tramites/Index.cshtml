@@ -1,0 +1,289 @@
+﻿@page
+@model SIASC.Web.Pages.Tramites.IndexModel
+
+@{
+    ViewData["Title"] = "Gestión de trámites";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between
+        align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Gestión de trámites
+            </h1>
+
+            <p class="text-muted mb-0">
+                Administración y seguimiento de solicitudes
+                de visa americana y pasaporte.
+            </p>
+        </div>
+
+        <a asp-page="/Tramites/Crear"
+           class="btn btn-primary">
+            + Nuevo trámite
+        </a>
+
+    </div>
+
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="text-muted small">
+                        Total de trámites
+                    </div>
+
+                    <div class="fs-3 fw-bold">
+                        @Model.TotalTramites
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="text-muted small">
+                        Trámites en proceso
+                    </div>
+
+                    <div class="fs-3 fw-bold text-primary">
+                        @Model.TramitesEnProceso
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+
+                    <div class="text-muted small">
+                        Trámites finalizados
+                    </div>
+
+                    <div class="fs-3 fw-bold text-success">
+                        @Model.TramitesFinalizados
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-3">
+                Buscar trámites
+            </h2>
+
+            <form method="get" class="row g-3 mb-4">
+
+                <div class="col-12 col-lg-4">
+
+                    <label asp-for="Busqueda"
+                           class="form-label">
+                        Cliente
+                    </label>
+
+                    <input asp-for="Busqueda"
+                           class="form-control"
+                           placeholder="Nombre o teléfono" />
+
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+
+                    <label asp-for="TipoServicioId"
+                           class="form-label">
+                        Tipo de servicio
+                    </label>
+
+                    <select asp-for="TipoServicioId"
+                            class="form-select">
+
+                        <option value="">
+                            Todos los servicios
+                        </option>
+
+                        @foreach (var servicio in Model.Servicios)
+                        {
+                            <option value="@servicio.Id">
+                                @servicio.Nombre
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+
+                    <label asp-for="EstadoId"
+                           class="form-label">
+                        Estado
+                    </label>
+
+                    <select asp-for="EstadoId"
+                            class="form-select">
+
+                        <option value="">
+                            Todos los estados
+                        </option>
+
+                        @foreach (var estado in Model.Estados)
+                        {
+                            <option value="@estado.Id">
+                                @estado.Nombre
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-12 col-lg-2 d-flex align-items-end">
+
+                    <button type="submit"
+                            class="btn btn-outline-primary w-100">
+                        Buscar
+                    </button>
+
+                </div>
+
+            </form>
+
+            @if (Model.Tramites.Count == 0)
+            {
+                <div class="text-center py-5">
+
+                    <h3 class="h5 text-muted">
+                        No se encontraron trámites
+                    </h3>
+
+                    <p class="text-muted mb-0">
+                        No hay solicitudes que coincidan
+                        con los filtros seleccionados.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Folio</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Estado</th>
+                                <th>Fecha de inicio</th>
+                                <th>Costo total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var tramite in Model.Tramites)
+                            {
+                                <tr>
+
+                                    <td class="fw-semibold">
+                                        #@tramite.TramiteId
+                                    </td>
+
+                                    <td>
+                                        <a asp-page="/Clientes/Detalle"
+                                           asp-route-id="@tramite.ClienteId"
+                                           class="text-decoration-none">
+                                            @tramite.NombreCliente
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        @tramite.NombreServicio
+                                    </td>
+
+                                    <td>
+                                        @if (tramite.CodigoEstado == "FINALIZADO")
+                                        {
+                                            <span class="badge bg-success">
+                                                @tramite.NombreEstado
+                                            </span>
+                                        }
+                                        else if (tramite.CodigoEstado == "CANCELADO")
+                                        {
+                                            <span class="badge bg-danger">
+                                                @tramite.NombreEstado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">
+                                                @tramite.NombreEstado
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @tramite.FechaInicio.ToLocalTime().ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @tramite.CostoTotal.ToString(
+                                            "C2",
+                                            new System.Globalization.CultureInfo("es-MX"))
+                                    </td>
+
+                                    <td>
+                                        <a asp-page="/Tramites/Detalle"
+                                           asp-route-id="@tramite.TramiteId"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Ver detalle
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

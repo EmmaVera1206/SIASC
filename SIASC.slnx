@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="SIASC.Application/SIASC.Application.csproj" />
+  <Project Path="SIASC.Domain/SIASC.Domain.csproj" />
+  <Project Path="SIASC.Infrastructure/SIASC.Infrastructure.csproj" />
+  <Project Path="SIASC.Tests/SIASC.Tests.csproj" />
+  <Project Path="SIASC.Web/SIASC.Web.csproj" />
+</Solution>
